@@ -1,0 +1,7 @@
+HTTP Proxy Server
+====
+
+1. Receive HTTP request from client (browser).
+2. Parse HTTP packet, get host and file requested.
+3. Send proper request to the actual web server.
+4. Get response from the web server and send it back to client.
