@@ -9,6 +9,7 @@ def processConn(conn,addr):
 	print "######## REQUEST ########"
 	print request
 	print "######## END OF REQUEST ########"
+	print ""
 	host = ''
 	get=''
 	redirect=''
@@ -32,9 +33,10 @@ def processConn(conn,addr):
 			conn.send( "connection to %s failed."%host)
 			conn.close()
 			return
-		c.settimeout(3)
+		#c.settimeout(3)
 		num_sent = c.send(request)
-		print "******** REQUEST SENT TO SERVER %d ********"%num_sent
+		print "******** REQUEST SENT TO SERVER %s of %d bytes ********"%(host,num_sent)
+		print ""
 		cdata = ""
 		FIRST=True
 		content_size=-1
@@ -44,6 +46,7 @@ def processConn(conn,addr):
 		while 1:
 			try:
 				line = c.recv(8092)
+				conn.send(line)
 				if line=="":
 					print "   EMPTY LINE"
 					return
@@ -52,9 +55,10 @@ def processConn(conn,addr):
 					strlist=(line.split("\r\n\r\n"))
 					header=strlist[0].split("\r\n")
 					content=""
-					print "######## RESPONSE ########"
-					print header
+					print "######## RESPONSE from %s ########"%host
+					print line
 					print "######## END OF RESPONSE ########"
+					print ""
 					for h in header:
 						if h.startswith("Content-Length"):
 							content_size=int(h.split(" ")[1])
@@ -68,21 +72,27 @@ def processConn(conn,addr):
 				else:
 					content=line
 
-				cdata += str(line)
+				#cdata += str(line)
 
 				if CONTENT:
 					content_size-=len(content)
 					if content_size<=0:
+						print "BREAK: NO CONTENT LEFT %d"%content_size
+						print ""
 						break
-				elif HTML and re.search("</HTML>",line,re.IGNORECASE):
+				elif re.search("</HTML>",line,re.IGNORECASE):
+					print "BREAK: END OF HTML"
+					print ""
 					break
 				elif CHUNKED:
 					if re.search("\r\n0\r\n\r\n",line):
+						print "BREAK: END OF CHUNKED MESSAGE"
+						print ""
 						break
 
 			except socket.timeout:
 				c.close()
-				conn.send(cdata)
+				#conn.send(cdata)
 				print "TIMEOUT ! ERROR !"
 				break
 
@@ -93,7 +103,9 @@ def processConn(conn,addr):
 				print e
 				break
 		c.close()
-		conn.send(cdata)
+		#print "######## SEND BACK CLIENT ########"
+		#print "######## END OF CLIENT ########"
+		#conn.send(cdata)
 	conn.close()
 
 
