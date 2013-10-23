@@ -6,7 +6,6 @@ import sys, os
 
 def processConn(conn,addr):
 	request = conn.recv(8092)
-	print ""
 	host = ''
 	get=''
 	redirect=''
@@ -26,15 +25,11 @@ def processConn(conn,addr):
 				get= '/'.join(get.lstrip("http://").split('/')[1:])
 			get='/'+get
 			getlst[1]=get
-			print "GETGETGET:",getlst
 			d=' '.join(getlst)
 		lst2.append(d)
 	request='\r\n'.join(lst2)
-	print "######## REQUEST ########"
-	print request
-	print "######## END OF REQUEST ########"
 
-	#print "request content from ",host,get
+	print "HTTP request to ",host
 	if not host=='':
 		c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		try:
@@ -46,8 +41,6 @@ def processConn(conn,addr):
 			return
 		#c.settimeout(3)
 		num_sent = c.send(request)
-		print "******** REQUEST SENT TO SERVER %s of %d bytes ********"%(host,num_sent)
-		print ""
 		cdata = ""
 		FIRST=True
 		content_size=-1
@@ -59,17 +52,13 @@ def processConn(conn,addr):
 				line = c.recv(8092)
 				conn.send(line)
 				if line=="":
-					print "   EMPTY LINE"
 					return
 
 				if FIRST:
+					print "HTTP reply from ",host
 					strlist=(line.split("\r\n\r\n"))
 					header=strlist[0].split("\r\n")
 					content=""
-					print "######## RESPONSE from %s ########"%host
-					print line
-					print "######## END OF RESPONSE ########"
-					print ""
 					for h in header:
 						if h.startswith("Content-Length"):
 							content_size=int(h.split(" ")[1])
@@ -88,17 +77,11 @@ def processConn(conn,addr):
 				if CONTENT:
 					content_size-=len(content)
 					if content_size<=0:
-						print "BREAK: NO CONTENT LEFT %d"%content_size
-						print ""
 						break
 				elif re.search("</HTML>",line,re.IGNORECASE):
-					print "BREAK: END OF HTML"
-					print ""
 					break
 				elif CHUNKED:
 					if re.search("\r\n0\r\n\r\n",line):
-						print "BREAK: END OF CHUNKED MESSAGE"
-						print ""
 						break
 
 			except socket.timeout:
