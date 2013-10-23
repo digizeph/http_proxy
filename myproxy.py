@@ -6,9 +6,6 @@ import sys, os
 
 def processConn(conn,addr):
 	request = conn.recv(8092)
-	print "######## REQUEST ########"
-	print request
-	print "######## END OF REQUEST ########"
 	print ""
 	host = ''
 	get=''
@@ -17,11 +14,25 @@ def processConn(conn,addr):
 		conn.close()
 		return
 	lst = request.split("\r\n")
+	lst2 = []
 	for d in lst:
 		if re.search("^Host",d):
 			host = d.split(' ')[1]
 		elif re.search("^GET",d):
-			get = d.split(' ')[1]
+			getlst=d.split(' ')
+
+			get = getlst[1]
+			if re.search("http://",get):
+				get= '/'.join(get.lstrip("http://").split('/')[1:])
+			get='/'+get
+			getlst[1]=get
+			print "GETGETGET:",getlst
+			d=' '.join(getlst)
+		lst2.append(d)
+	request='\r\n'.join(lst2)
+	print "######## REQUEST ########"
+	print request
+	print "######## END OF REQUEST ########"
 
 	#print "request content from ",host,get
 	if not host=='':
