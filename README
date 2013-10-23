@@ -14,5 +14,7 @@ To run the proxy, just simply run:
 The number in which can be any random number from 1025 to 65535, which is used as proxy port.
 
 The output of the program is reduced to simply the request's destination and the reply's source.
-The proxy has been tested on Firefox web browsing, works just fine. 
+The proxy has been tested on ix.cs.uoregon.edu with Firefox web browsing tasks, works just fine. 
+
 Internally it applies socket.accept and multi-thread programming to allow multiple sockets connecting at the same time.
+The detail implementation can refer to the code. 
