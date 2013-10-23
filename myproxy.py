@@ -104,12 +104,21 @@ def processConn(conn,addr):
 
 
 if __name__=="__main__":
+	if len(sys.argv)!=2:
+		print "USAGE: python myproxy.py PORT"
+		print "  e.g. python myproxy.py 28088"
+		print ""
+		exit(1)
 	HOST = ''                 # Symbolic name meaning the local host
-	PORT = 28088             # Arbitrary non-privileged port
+	PORT = int(sys.argv[1])             # Arbitrary non-privileged port
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.bind((HOST, PORT))
-	s.listen(1)
-	print s.gettimeout()
+	try:
+		s.bind((HOST, PORT))
+		s.listen(1)
+	except Exception,e:
+		print "Cannot bind the port on %d"%PORT
+		print e
+		exit(1)
 	while 1:
 		conn, addr = s.accept()
 		thread.start_new_thread(processConn,(conn,addr))
