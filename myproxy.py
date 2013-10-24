@@ -1,4 +1,10 @@
 #!/usr/bin/python
+
+"""
+	Author: Mingwei Zhang <mingwei@cs.uoregon.edu>
+	Date: Oct. 23rd, 2013
+"""
+
 import socket,re,thread,sys,os
 
 #
@@ -126,15 +132,16 @@ def processConn(conn,addr):
 
 if __name__=="__main__":
 	# Accept port number as inputs.
-	if len(sys.argv)!=2:
+	if len(sys.argv)>2:
 		print "USAGE: python myproxy.py PORT"
 		print "  e.g. python myproxy.py 28088"
 		print ""
 		exit(1)
 	HOST = ''                 # Symbolic name meaning the local host
-	PORT = -1
+	PORT = 28088
 	try:
-		PORT = int(sys.argv[1])             # Arbitrary non-privileged port
+		if len(sys.argv)==2:
+			PORT = int(sys.argv[1])             # Arbitrary non-privileged port
 		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		s.bind((HOST, PORT))
 		s.listen(1)

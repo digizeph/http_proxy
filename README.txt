@@ -11,7 +11,10 @@ Proxy logic:
 
 To run the proxy, just simply run: 
 	python myproxy.py 28088
+Or just:
+	python myproxy.py
 The number in which can be any random number from 1025 to 65535, which is used as proxy port.
+If you do not specify a port number, the program will use 28088 as a default port.
 
 The output of the program is reduced to simply the request's destination and the reply's source.
 The proxy has been tested on ix.cs.uoregon.edu with Firefox web browsing tasks, works just fine. 
