@@ -1,7 +1,7 @@
 HTTP Proxy Server
 ====
 
-Author: Mingwei Zhang <mingwei@cs.uoregon.edu>, 951298594
+Author: Mingwei Zhang <mingwei@cs.uoregon.edu>
 
 Proxy logic:
 1. Receive HTTP request from client (browser).
